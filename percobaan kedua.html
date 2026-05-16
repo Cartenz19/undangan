@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Wedding of Ikhsan & Intan</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap');
+
+        /* PALET WARNA: EMERALD BLUE & WHITE */
+        :root {
+            --accent-color: #028090; 
+            --accent-dark: #015c68;
+            --text-main: #2c3e50; 
+            --text-light: #ffffff;
+            --emerald-glow: rgba(2, 128, 144, 0.4);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #ffffff; }
+        ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-main);
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            background-color: #ffffff; 
+        }
+
+        body.locked { overflow: hidden; }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; margin-bottom: 15px; }
+        .section-title { color: var(--accent-color); font-size: 2.5rem; text-align: center; margin-bottom: 10px; text-shadow: 1px 1px 5px rgba(255,255,255,0.8);}
+
+        /* 1. PRELOADER */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: #ffffff; z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease;
+        }
+        .loader-ring {
+            width: 60px; height: 60px; border: 4px solid rgba(2, 128, 144, 0.2);
+            border-radius: 50%; border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 2. VANTA 3D BACKGROUND CONTAINER */
+        #vanta-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -2;
+        }
+        
+        /* Lapisan Semi-transparan putih agar burung di belakang tidak bertabrakan dengan teks */
+        .bg-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
+            background: rgba(255, 255, 255, 0.4); 
+            z-index: -1; pointer-events: none;
+        }
+
+        /* 3. KERLAP-KERLIP (SPARKLES) */
+        .sparkle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9990; pointer-events: none; }
+        .sparkle { 
+            position: absolute; background-color: var(--accent-color); 
+            border-radius: 50%; box-shadow: 0 0 12px var(--accent-color), 0 0 20px var(--accent-color); 
+            opacity: 0; animation: twinkle linear infinite; 
+        }
+        @keyframes twinkle { 
+            0% { transform: translateY(-20px) scale(0); opacity: 0; } 
+            50% { opacity: 0.5; } 
+            100% { transform: translateY(150px) scale(0); opacity: 0; } 
+        }
+
+        /* 4. COVER DEPAN */
+        #cover-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9998;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+            background: linear-gradient(rgba(1, 40, 50, 0.85), rgba(1, 60, 70, 0.95)); 
+            backdrop-filter: blur(5px);
+        }
+        #cover-overlay.open { transform: translateY(-100vh); }
+        .cover-content { z-index: 2; display: flex; flex-direction: column; align-items: center; }
+        .title { font-size: 4.5rem; color: var(--text-light); margin: 15px 0; text-shadow: 2px 2px 20px rgba(0,0,0,0.8); }
+        
+        .btn-open {
+            margin-top: 40px; padding: 15px 45px; background: var(--accent-color); color: var(--text-light);
+            border: 1px solid var(--accent-color); border-radius: 30px; font-size: 1.1rem; cursor: pointer; pointer-events: auto;
+            transition: 0.4s; font-family: 'Montserrat', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+            box-shadow: 0 5px 20px var(--emerald-glow);
+        }
+        .btn-open:hover { background: transparent; border-color: var(--text-light); box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+
+        /* 5. KONTEN UTAMA DENGAN EFEK KACA (FROSTED GLASS) */
+        .invitation-content { padding-top: 40px; padding-bottom: 90px; position: relative; z-index: 1; }
+        .section { padding: 60px 20px; max-width: 900px; margin: 0 auto; }
+        
+        /* Kotak Panel Kaca (Burung Vanta akan terlihat terbang di baliknya) */
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.65); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.9); 
+            box-shadow: 0 10px 40px rgba(2, 128, 144, 0.1); 
+            border-radius: 20px;
+            margin-top: 30px; margin-bottom: 30px;
+        }
+
+        .countdown-container { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 30px;}
+        .time-box { background: rgba(255,255,255,0.8); border: 1px solid rgba(2, 128, 144, 0.2); padding: 20px; border-radius: 12px; text-align: center; min-width: 75px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
+        .time-box span { font-size: 2.2rem; font-family: 'Playfair Display', serif; color: var(--accent-color); display: block;}
+        .time-box p { margin: 8px 0 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-main); font-weight: 600;}
+        
+        .btn-calendar {
+            display: inline-block; margin-top: 30px; padding: 12px 25px;
+            background: #ffffff; border: 2px solid var(--accent-color);
+            color: var(--accent-color); border-radius: 25px; text-decoration: none; font-size: 0.9rem;
+            transition: 0.3s; font-weight: 600; box-shadow: 0 5px 15px rgba(2,128,144,0.15);
+        }
+        .btn-calendar:hover { background: var(--accent-color); color: #fff; }
+
+        .map-container, .video-container { width: 100%; border-radius: 15px; overflow: hidden; margin-top: 30px; border: 3px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1);}
+        .map-container { height: 350px; }
+        .video-container { aspect-ratio: 16/9; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 30px;}
+        .gallery-item { width: 100%; height: 280px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: 0.5s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #fff;}
+        .gallery-item:hover { transform: translateY(-5px); box-shadow: 0 15px 25px rgba(2, 128, 144, 0.3); border-color: var(--accent-color);}
+
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(1, 40, 50, 0.95); z-index: 10005; justify-content: center; align-items: center; flex-direction: column; opacity: 0; transition: opacity 0.4s ease; backdrop-filter: blur(8px);}
+        #lightbox.show { display: flex; opacity: 1; }
+        #lightbox img { max-width: 90%; max-height: 65vh; border-radius: 12px; border: 3px solid var(--text-light); box-shadow: 0 0 30px rgba(255,255,255,0.2);}
+        #lightbox p { color: var(--text-light); margin-top: 25px; font-style: italic; text-align: center; font-family: 'Playfair Display', serif; font-size: 1.4rem; max-width: 80%; line-height: 1.6;}
+        .close-btn { position: absolute; top: 25px; right: 35px; font-size: 3rem; color: #fff; cursor: pointer; transition: 0.3s; }
+        .close-btn:hover { color: var(--accent-color); }
+
+        .wallet-card { background: linear-gradient(135deg, #ffffff, #e8f4f5); border: 1px solid rgba(2,128,144,0.3); padding: 35px; border-radius: 20px; margin: 30px auto; max-width: 380px; box-shadow: 0 15px 35px rgba(2,128,144,0.15);}
+        .btn-copy { background-color: var(--accent-color); color: #fff; border: none; padding: 15px 30px; border-radius: 30px; cursor: pointer; width: 100%; transition: 0.3s; font-weight: bold; letter-spacing: 1px; box-shadow: 0 5px 15px var(--emerald-glow);}
+        .btn-copy:hover { background-color: var(--accent-dark); transform: translateY(-2px); }
+        
+        .form-group { margin-bottom: 20px; text-align: left;}
+        input, select, textarea { width: 100%; padding: 18px; background-color: #ffffff; color: var(--text-main); border: 1px solid #ccc; border-radius: 12px; box-sizing: border-box; font-family: inherit; font-size: 1rem; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 12px var(--emerald-glow);}
+        
+        .wishes-board { background-color: rgba(255, 255, 255, 0.95); border: 1px solid #e0e0e0; padding: 25px; border-radius: 15px; max-height: 400px; overflow-y: auto; margin-top: 40px; text-align: left; box-shadow: inset 0 0 15px rgba(0,0,0,0.05);}
+        .wish-card { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;}
+        .wish-name { font-weight: 600; color: var(--accent-color); margin-bottom: 5px; display: block; font-size: 1.1rem;}
+
+        .fade-in { opacity: 0; transform: translateY(40px); transition: 1s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        .music-control { position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px; background-color: var(--accent-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10001; display: none; box-shadow: 0 5px 15px rgba(2,128,144,0.4); border: 2px solid #fff;}
+        .music-control i { color: #fff; font-size: 1.3rem; }
+        .spin { animation: spinRecord 3s linear infinite; }
+        @keyframes spinRecord { 100% { transform: rotate(360deg); } }
+
+        .bottom-nav {
+            position: fixed; bottom: -80px; left: 0; width: 100%; height: 65px;
+            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px);
+            border-top: 1px solid #eee; box-shadow: 0 -5px 25px rgba(0,0,0,0.08);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 10000; transition: bottom 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .bottom-nav.show { bottom: 0; }
+        .nav-item { color: #888; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; gap: 5px; transition: 0.3s; font-weight: 600;}
+        .nav-item i { font-size: 1.2rem; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-color); transform: translateY(-3px);}
+
+        @media (max-width: 768px) {
+            .title { font-size: 3.2rem; }
+            .section-title { font-size: 2.2rem; }
+            .section { padding: 40px 15px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-item { height: 200px; }
+            #lightbox p { font-size: 1.2rem; }
+        }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.birds.min.js"></script>
+
+</head>
+<body class="locked">
+
+    <div id="preloader">
+        <div class="loader-ring"></div>
+    </div>
+
+    <div id="vanta-bg"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="sparkle-container" id="sparkles"></div>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="music-control" id="music-btn" onclick="toggleMusic()">
+        <i class="fas fa-compact-disc spin" id="music-icon"></i>
+    </div>
+
+    <section id="cover-overlay">
+        <div class="cover-content">
+            <p style="letter-spacing: 5px; color: var(--text-light); text-transform: uppercase; font-size: 0.9rem; font-weight: 600; opacity: 0.8;">The Wedding Of</p>
+            <h1 class="title">Ikhsan & Intan</h1>
+            <p style="margin-top: 15px; font-size: 1.1rem; color: #eee;">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+            
+            <p id="nama-tamu" style="font-family: 'Playfair Display', serif; font-weight: bold; font-size: 1.8rem; color: var(--text-light); text-transform: capitalize; margin: 10px 0; letter-spacing: 1px;">Tamu Undangan</p>
+            
+            <button class="btn-open" onclick="bukaUndangan()">Buka Undangan</button>
+        </div>
+    </section>
+
+    <div id="lightbox">
+        <span class="close-btn" onclick="closeLightbox()">×</span>
+        <img id="lightbox-img" src="" alt="Gallery Image">
+        <p id="lightbox-text">Caption</p>
+    </div>
+
+    <div class="invitation-content">
+        
+        <section id="home" class="section text-center">
+            <h2 class="section-title fade-in">Save The Date</h2>
+            <div class="countdown-container fade-in">
+                <div class="time-box"><span id="days">00</span><p>Hari</p></div>
+                <div class="time-box"><span id="hours">00</span><p>Jam</p></div>
+                <div class="time-box"><span id="minutes">00</span><p>Menit</p></div>
+                <div class="time-box"><span id="seconds">00</span><p>Detik</p></div>
+            </div>
+            
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Ikhsan+%26+Intan&dates=20260815T020000Z/20260815T050000Z&details=Kehadiran+dan+doa+restu+Anda+merupakan+suatu+kehormatan+bagi+kami.&location=Gedung+Serbaguna+Utama" target="_blank" class="btn-calendar fade-in">
+                <i class="far fa-calendar-alt" style="margin-right: 5px;"></i> Simpan ke Kalender
+            </a>
+        </section>
+
+        <section id="lokasi" class="section glass-panel text-center">
+            <h2 class="section-title fade-in">Lokasi Acara</h2>
+            <h3 class="fade-in" style="color: var(--accent-color); font-size: 1.6rem; margin-top: 20px;">Gedung Serbaguna Utama</h3>
+            <p class="fade-in" style="color: #444; font-size: 0.95rem; line-height: 1.6; max-width: 600px; margin: 10px auto;">Jl. Contoh Nama Jalan No. 123, Kota Bahagia.</p>
+            <div class="map-container fade-in">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126907.080517861!2d106.74418652610738!3d-6.28421832103551!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f14d30079f01%3A0x2e74f2341fff266d!2sStadion%20Utama%20Gelora%20Bung%20Karno!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <section id="galeri" class="section text-center">
+            <h2 class="section-title fade-in">Kisah Kami</h2>
+            <div class="video-container fade-in">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1" title="Prewedding Video" allowfullscreen></iframe>
+            </div>
+            
+            <h3 class="fade-in" style="margin-top: 50px; color: var(--accent-color); font-size: 2rem;">Momen Bahagia</h3>
+            <p class="fade-in" style="font-size: 0.9rem; color: #555;">Ketuk foto untuk melihat cerita</p>
+            
+            <div class="gallery-grid">
+                <img src="foto background.jpeg" class="gallery-item fade-in" onclick="openLightbox(this.src, 'Pertemuan pertama yang tak disengaja, menjadi awal dari segalanya.')">
+                <img src="foto background 2.jpeg" class="gallery-item fade-in" onclick="openLightbox(this.src, 'Menyatukan dua visi dalam satu langkah yang sama.')">
+                <img src="foto background 3.jpeg" class="gallery-item fade-in" onclick="openLightbox(this.src, 'Tawa dan canda yang selalu mengiringi setiap perjalanan kita.')">
+                <img src="foto background 4.jpeg" class="gallery-item fade-in" onclick="openLightbox(this.src, 'Kini dan selamanya, kita mengikat janji suci.')">
+            </div>
+        </section>
+
+        <section class="section glass-panel text-center">
+            <h2 class="section-title fade-in">Wedding Gift</h2>
+            <p class="fade-in" style="color: #444; margin-bottom: 20px;">Tanda kasih untuk melengkapi kebahagiaan kami.</p>
+            <div class="wallet-card fade-in">
+                <i class="fas fa-university" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 20px;"></i>
+                <h3 style="margin: 0; color: var(--accent-color);">BCA</h3>
+                <p style="font-size: 1.5rem; letter-spacing: 3px; font-weight: bold; margin: 15px 0; color: var(--text-main);" id="rek-1">1234 5678 9012</p>
+                <p style="color: #666; margin-bottom: 25px;">a.n. Ikhsan / Intan</p>
+                <button class="btn-copy" onclick="copyRek('rek-1')"><i class="far fa-copy"></i> SALIN REKENING</button>
+            </div>
+        </section>
+
+        <section id="rsvp" class="section text-center" style="margin-bottom: 20px;">
+            <h2 class="section-title fade-in">RSVP & Ucapan</h2>
+            <p class="fade-in" style="color: #555; margin-bottom: 40px;">Kehadiran dan doa restu Anda adalah kado terindah.</p>
+            
+            <form name="rsvp-form" id="rsvp-form" class="fade-in" style="max-width: 500px; margin: 0 auto;">
+                <div class="form-group"><input type="text" id="nama" name="nama" placeholder="Nama Lengkap" required></div>
+                <div class="form-group">
+                    <select id="kehadiran" name="kehadiran" required>
+                        <option value="" disabled selected>Konfirmasi Kehadiran</option>
+                        <option value="Hadir">Ya, Saya Akan Hadir</option>
+                        <option value="Tidak Hadir">Maaf, Tidak Bisa Hadir</option>
+                    </select>
+                </div>
+                <div class="form-group"><textarea id="ucapan" name="ucapan" rows="5" placeholder="Tulis doa dan ucapan terbaik..." required></textarea></div>
+                <button type="submit" id="btn-submit" class="btn-copy">
+                    <i class="fas fa-paper-plane" style="margin-right: 5px;"></i> KIRIM UCAPAN
+                </button>
+            </form>
+
+            <div class="wishes-board fade-in" id="wishes-container">
+                <div class="wish-card">
+                    <span class="wish-name">Admin Undangan <i class="fas fa-check-circle" style="color: var(--accent-color); font-size:12px;"></i></span>
+                    <p style="margin: 0; font-size: 0.95rem; color: #555; line-height: 1.6;">Mari tinggalkan pesan dan doa terbaik untuk calon mempelai.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <nav class="bottom-nav" id="bottom-nav">
+        <a href="#home" class="nav-item"><i class="fas fa-home"></i> Home</a>
+        <a href="#lokasi" class="nav-item"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
+        <a href="#galeri" class="nav-item"><i class="fas fa-images"></i> Galeri</a>
+        <a href="#rsvp" class="nav-item"><i class="fas fa-envelope-open-text"></i> RSVP</a>
+    </nav>
+
+    <script>
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 800);
+        });
+
+        // MENGAKTIFKAN VANTA.JS BIRDS ANIMATION
+        document.addEventListener("DOMContentLoaded", () => {
+            VANTA.BIRDS({
+                el: "#vanta-bg",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                backgroundColor: 0xffffff, // Latar belakang putih
+                color1: 0x028090, // Burung warna Emerald Blue
+                color2: 0x015c68, // Gradasi burung Emerald gelap
+                colorMode: "variance",
+                birdSize: 1.50,
+                wingSpan: 30.00,
+                speedLimit: 4.00, // Kecepatan terbang
+                separation: 50.00,
+                alignment: 20.00,
+                cohesion: 20.00,
+                quantity: 4.00 // Jumlah burung
+            });
+        });
+
+        function createSparkles() {
+            const container = document.getElementById("sparkles");
+            const w = window.innerWidth, h = window.innerHeight;
+            for (let i = 0; i < 60; i++) { 
+                let sparkle = document.createElement("div");
+                sparkle.className = "sparkle";
+                let size = Math.random() * 4 + 2; 
+                sparkle.style.width = size + "px"; sparkle.style.height = size + "px";
+                sparkle.style.left = Math.random() * w + "px"; sparkle.style.top = Math.random() * h + "px";
+                sparkle.style.animationDuration = (Math.random() * 4 + 2) + "s";
+                sparkle.style.animationDelay = Math.random() * 5 + "s";
+                container.appendChild(sparkle);
+            }
+        }
+        createSparkles();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const namaTamu = urlParams.get('to');
+            if (namaTamu) {
+                document.getElementById('nama-tamu').innerText = namaTamu;
+                const inputNama = document.getElementById('nama');
+                if (inputNama) inputNama.value = namaTamu; 
+            }
+        });
+
+        const music = document.getElementById("bg-music");
+        const musicBtn = document.getElementById("music-btn");
+        const musicIcon = document.getElementById("music-icon");
+        const bottomNav = document.getElementById("bottom-nav");
+        let isPlaying = false;
+
+        function bukaUndangan() {
+            document.getElementById("cover-overlay").classList.add("open");
+            document.body.classList.remove("locked");
+            musicBtn.style.display = "flex";
+            bottomNav.classList.add("show"); 
+            
+            music.play().then(() => {
+                isPlaying = true; musicIcon.classList.add("spin");
+            }).catch(() => console.log("Menunggu interaksi user"));
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicIcon.classList.remove("spin", "fa-compact-disc"); musicIcon.classList.add("fa-pause-circle");
+            } else {
+                music.play();
+                musicIcon.classList.add("spin", "fa-compact-disc"); musicIcon.classList.remove("fa-pause-circle");
+            }
+            isPlaying = !isPlaying;
+        }
+
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxText = document.getElementById('lightbox-text');
+
+        function openLightbox(imgSrc, text) {
+            lightboxImg.src = imgSrc; lightboxText.innerText = text;
+            lightbox.classList.add('show'); document.body.classList.add("locked");
+        }
+        function closeLightbox() {
+            lightbox.classList.remove('show'); document.body.classList.remove("locked");
+        }
+
+        function copyRek(id) {
+            navigator.clipboard.writeText(document.getElementById(id).innerText.replace(/\s/g, ''));
+            alert("Nomor rekening berhasil disalin!");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const obs = new IntersectionObserver(e => e.forEach(en => { if(en.isIntersecting) en.target.classList.add('visible') }));
+            document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+        });
+
+        const countDownDate = new Date(2026, 7, 15, 0, 0, 0).getTime(); 
+        setInterval(() => {
+            const distance = countDownDate - new Date().getTime();
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
+        }, 1000);
+
+        const scriptURL = 'MASUKKAN_URL_WEB_APP_ANDA_DI_SINI'; 
+        const form = document.forms['rsvp-form'];
+        const btnSubmit = document.getElementById('btn-submit');
+        const board = document.getElementById('wishes-container');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault(); 
+            btnSubmit.innerHTML = 'MENGIRIM... <i class="fas fa-spinner fa-spin"></i>'; btnSubmit.disabled = true;
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    const nama = document.getElementById('nama').value;
+                    const kehadiran = document.getElementById('kehadiran').value;
+                    const ucapan = document.getElementById('ucapan').value;
+                    
+                    const icon = kehadiran === 'Hadir' 
+                        ? '<i class="fas fa-check-circle" style="color: #028090; font-size:12px;"></i>' 
+                        : '<i class="fas fa-times-circle" style="color: #e74c3c; font-size:12px;"></i>';
+
+                    const newWish = `
+                        <div class="wish-card" style="animation: fade-in 0.5s;">
+                            <span class="wish-name">${nama} ${icon}</span>
+                            <p style="margin: 0; font-size: 0.95rem; color: #555; line-height: 1.6;">${ucapan}</p>
+                        </div>
+                    `;
+                    
+                    board.insertAdjacentHTML('afterbegin', newWish); 
+                    const inputNama = document.getElementById('nama').value;
+                    form.reset(); 
+                    document.getElementById('nama').value = inputNama; 
+                    btnSubmit.innerHTML = '<i class="fas fa-paper-plane"></i> KIRIM UCAPAN'; btnSubmit.disabled = false;
+                })
+                .catch(error => {
+                    btnSubmit.innerHTML = '<i class="fas fa-paper-plane"></i> KIRIM UCAPAN'; btnSubmit.disabled = false;
+                    alert('Pastikan URL Google Script sudah benar atau cek koneksi Anda.');
+                });
+        });
+    </script>
+</body>
+</html>
